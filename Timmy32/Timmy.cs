@@ -31,6 +31,21 @@ namespace Timmy32
 
         }
 
+       
+        public bool DeleteUser(int userId)
+        {
+            return client.DeleteUserCtrl(_machineNo, userId);
+        }
+        
+        public bool DeletePassword(int userId)
+        {
+            return client.DeleteEnrollData(_machineNo, userId,1,10); //0-9 fingers | 10 password  11 cardata | 12 = 0-11 | 13 all fingers |20-27 : faces
+        }
+
+        public bool DeleteFinger(int userId, int fingerIndex)
+        {
+            return client.DeleteEnrollData(_machineNo, userId, 1, fingerIndex);
+        }
         public void DisConnect()
         {
             
@@ -328,6 +343,18 @@ namespace Timmy32
         }
 
 
+        public void UploadPhoto(int userId, string src)
+        {
+            var bytes = Encoding.UTF8.GetBytes(src);
+            //client.SetEnrollPhoto(_machineNo, userId, bytes.Length, bytes[0]);
+        }
+
+        public void DeleteAllLogs()
+        {
+            client.EmptyGeneralLogData(_machineNo);
+        }
+
+        
         public byte[] GetFace(int userId, int index)
         {
             int dwPrivilegeNum = 0;

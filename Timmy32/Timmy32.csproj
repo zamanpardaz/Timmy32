@@ -74,6 +74,10 @@
   <ItemGroup>
     <Compile Include="Commands\Capacity.cs" />
     <Compile Include="Commands\Clear.cs" />
+    <Compile Include="Commands\DeleteFinger.cs" />
+    <Compile Include="Commands\DeleteLogs.cs" />
+    <Compile Include="Commands\DeletePassword.cs" />
+    <Compile Include="Commands\DeleteUser.cs" />
     <Compile Include="Commands\Disable.cs" />
     <Compile Include="Commands\Enable.cs" />
     <Compile Include="Commands\Getface.cs" />

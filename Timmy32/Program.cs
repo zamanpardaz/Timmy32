@@ -54,6 +54,10 @@ namespace Timmy32
     [Subcommand("users", typeof(Users))]
     [Subcommand("setprivilege", typeof(Setprivilege))]
     [Subcommand("version", typeof(Commands.Version))]
+    [Subcommand("deluser", typeof(Commands.DeleteUser))]
+    [Subcommand("delpass", typeof(Commands.DeletePassword))]
+    [Subcommand("delfinger", typeof(Commands.DeleteFinger))]
+    [Subcommand("dellogs", typeof(Commands.DeleteLogs))]
     class Program
     {
         static int Main(string[] args)
