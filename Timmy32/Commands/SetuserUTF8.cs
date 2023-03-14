@@ -1,13 +1,13 @@
-﻿using McMaster.Extensions.CommandLineUtils;
 using System;
 using System.Text;
+using McMaster.Extensions.CommandLineUtils;
 using Timmy32.Exceptions;
 using Timmy32.Models;
 
 namespace Timmy32.Commands
 {
-    [Command(Description = "Set User")]
-    class Setuser : BaseParameters
+    [Command(Description = "Set User UTF*")]
+    class SetuserUTF8 : BaseParameters
     {
 
         [Option(ShortName = "u")]
@@ -32,7 +32,7 @@ namespace Timmy32.Commands
 
 
             var name = Encoding.UTF8.GetString(Convert.FromBase64String(Name));
-            var result = timmy.SetUser(new User()
+            var result = timmy.SetUserUTF8(new User()
             {
                 Id=UserId,
                 Name=name,

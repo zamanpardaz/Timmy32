@@ -12,7 +12,7 @@ namespace Commander
 {
     public partial class Form1 : Form
     {
-        string exec = @"D:\MyProjects\RollCall Project\Timmy32\Timmy32\Timmy32\bin\x86\Debug\timmy32.exe";
+        string exec = @"D:\MyProjects\RollCall Project\Timmy32\Timmy32\Timmy32\bin\Debug\timmy32.exe";
 
         CommandLineExecutor commander = null;
 
@@ -188,6 +188,14 @@ namespace Commander
             var logs = commander.ExecuteCommand("logs", dics, new GetLogsParser());
 
             MessageBox.Show(logs.Count.ToString());
+        }
+
+        private void button16_Click(object sender, EventArgs e)
+        {
+            var dics = commander.GetDefaultArguments();
+            var users = commander.ExecuteCommand("users", dics, new UserParser());
+            MessageBox.Show("Users Count : " + users.Count);
+
         }
     }
 }

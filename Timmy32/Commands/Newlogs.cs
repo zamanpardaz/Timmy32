@@ -19,7 +19,7 @@ namespace Timmy32.Commands
                 return;
             }
 
-            var logs = timmy.GetLogs();
+            var logs = timmy.GetLogs(true);
 
             if (logs.Count == 0)
             {

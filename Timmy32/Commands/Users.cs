@@ -32,8 +32,13 @@ namespace Timmy32.Commands
             foreach (var user in users)
             {
                 var name = user.Name;
-                var bytes = Encoding.UTF8.GetBytes(name);
-                var base64 = Convert.ToBase64String(bytes);
+                var base64 = "";
+
+                if (String.IsNullOrEmpty(name) == false)
+                {
+                    var bytes = Encoding.UTF8.GetBytes(name);
+                    base64 = Convert.ToBase64String(bytes);
+                }
 
                 console.Write(user.Id + ",");
                 console.Write(base64 + ",");

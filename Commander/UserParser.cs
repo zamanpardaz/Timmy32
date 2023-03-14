@@ -14,7 +14,7 @@ namespace Commander
             if (data == "Result=NoData")
                 return null;
 
-            var lines = data.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            var lines = data.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
             var list = new List<User>();
             foreach(var line in lines)

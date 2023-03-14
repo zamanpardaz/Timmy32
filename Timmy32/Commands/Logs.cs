@@ -30,7 +30,7 @@ namespace Timmy32.Commands
             foreach(var log in logs)
             {
                 console.Write(log.dwEnrollNumber + ",");
-                console.Write(log.dwInout + ",");
+                console.Write(log.dwEvent + ",");
                 console.Write(log.dwVerifyMode + ",");
                 console.Write(log.dwEvent + ",");
                 console.Write(log.dwYear + ",");

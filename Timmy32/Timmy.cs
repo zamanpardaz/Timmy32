@@ -30,6 +30,19 @@ namespace Timmy32
             return isConnected;
 
         }
+        
+        public bool ConnectByUsb(string ip, int port, int password = 0, int machineNo = 1)
+        {
+            _machineNo = machineNo;
+            var isSet = client.SetIPAddress(ref ip, port, password);
+            if (!isSet)
+                return false;
+            var isConnected = client.OpenCommPort(_machineNo);
+
+            return isConnected;
+
+        }
+
 
        
         public bool DeleteUser(int userId)
@@ -183,11 +196,18 @@ namespace Timmy32
             client.ClearUserCtrl(_machineNo);
         }
 
+        public bool SetUserUTF8(User user)
+        {
+            object obj = new System.Runtime.InteropServices.VariantWrapper(user.Name);
+            var bret = client.SetUserNameUTF8(0, _machineNo, user.Id, 1, ref obj);
+
+            return bret;
+        }
 
         public bool SetUser(User user)
         {
             object obj = new System.Runtime.InteropServices.VariantWrapper(user.Name);
-            var bret = client.SetUserNameUTF8(0, _machineNo, user.Id, 1, ref obj);
+            var bret = client.SetUserName(0, _machineNo, user.Id, 1, ref obj);
 
             return bret;
         }
@@ -238,30 +258,61 @@ namespace Timmy32
         }
         public List<User> GetUsers()
         {
-            client.ReadAllUserID(_machineNo);
 
             int dwEnrollNumber = 0;
-            int dwMachineNumber = 0;
-            int dwBackupNumber = 0;
-            int dwUserPrivilege = 0;
-            int dwAttendenceEnable = 0;
+            int dwEnMachineID = 0;
+            int dwBackupNum = 0;
+            int dwPrivilegeNum = 0;
+            int dwEnable = 0;
+            int dwPassWord = 0;
+            int vPhotoSize = 0;
+            
+            
             bool bRet;
             var users = new List<User>();
 
+            client.ReadAllUserID(_machineNo);
             do
             {
-                bRet = client.GetAllUserID(_machineNo,
-               ref dwEnrollNumber,
-               ref dwMachineNumber,
-               ref dwBackupNumber,
-               ref dwUserPrivilege,
-               ref dwAttendenceEnable);
 
+                bRet = client.GetAllUserID(
+                    _machineNo,
+                    ref dwEnrollNumber,
+                    ref dwEnMachineID,
+                    ref dwBackupNum,
+                    ref dwPrivilegeNum,
+                    ref dwEnable
+                );
+                
+                
+                int[] dwData = new int[1420 / 4];
+                
+                int[] FacedwData = new int[1888 / 4];
+                int[] indexDataFacePhoto = new int[400800];
+                object obj = new System.Runtime.InteropServices.VariantWrapper(FacedwData);
+
+                client.GetEnrollData(_machineNo,
+               dwEnrollNumber,
+               dwEnMachineID, 
+               dwBackupNum,
+               ref dwPrivilegeNum,
+               ref obj,
+               ref dwPassWord);
+
+                if (dwEnrollNumber == 0)
+                {
+                    continue;
+                }
+
+                if (users.Any(x => x.Id == dwEnrollNumber))
+                {
+                    continue;
+                }
                 users.Add(new User()
                 {
                     Id = dwEnrollNumber,
-                    Enabled = dwAttendenceEnable == 1,
-                    Privilege = dwUserPrivilege,
+                    Enabled = true,
+                    Privilege = dwPrivilegeNum,
                     Name = GetName(dwEnrollNumber)
                 });
 
@@ -373,7 +424,11 @@ namespace Timmy32
             );
 
             if (!bRet)
+            {
+                int errCode = 0;
+                client.GetLastError(ref errCode);
                 return null;
+            }
 
             FacedwData = (int[])obj;
             byte[] _indexDataFace = new byte[1888];
@@ -416,12 +471,13 @@ namespace Timmy32
             return error;
         }
 
-        public List<GeneralLogInfo> GetLogs()
+        public List<GeneralLogInfo> GetLogs(bool marked=false)
         {
             GeneralLogInfo gLogInfo = new GeneralLogInfo();
 
             List<GeneralLogInfo> myArray = new List<GeneralLogInfo>();
 
+            client.ReadMark = marked;
 
             var bRet = client.ReadGeneralLogData(_machineNo);
             do

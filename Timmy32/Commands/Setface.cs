@@ -1,5 +1,6 @@
 ﻿using McMaster.Extensions.CommandLineUtils;
 using System;
+using System.Text;
 using Timmy32.Exceptions;
 using Timmy32.Models;
 
@@ -30,6 +31,7 @@ namespace Timmy32.Commands
 
 
             var bytes = Convert.FromBase64String(Data);
+            
 
             var result = timmy.SetFace(UserId, FaceIndex, bytes);
 

@@ -38,7 +38,10 @@ namespace Timmy32.Models
 
         protected bool Connect(Timmy timmy, IConsole console)
         {
-            var isConnected= timmy.ConnectByIp(Ip, Port, Password, MachinNo);
+            var isConnected = false;
+          
+                timmy.ConnectByIp(Ip, Port, Password, MachinNo);
+            
             if(!isConnected)
                 console.WriteLine(Constants.FormatErrortMessage(Constants.ConnectionFailed));
 

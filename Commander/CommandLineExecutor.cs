@@ -17,8 +17,9 @@ namespace Commander
         public Dictionary<string, string> GetDefaultArguments()
         {
             var dics = new Dictionary<string, string>();
-            dics.Add("ip", "192.168.1.224");
+            dics.Add("ip", "192.168.1.109");
             dics.Add("port", "5005");
+            dics.Add("machin-no", "1");
 
            
 
