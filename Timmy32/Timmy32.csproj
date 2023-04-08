@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Timmy32</RootNamespace>
     <AssemblyName>Timmy32</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -84,6 +84,7 @@
     <Compile Include="Commands\Getfingerprint.cs" />
     <Compile Include="Commands\Getname.cs" />
     <Compile Include="Commands\Setprivilege.cs" />
+    <Compile Include="Commands\SetUserExpiration.cs" />
     <Compile Include="Commands\SetuserUTF8.cs" />
     <Compile Include="Commands\Version.cs" />
     <Compile Include="Commands\Gettime.cs" />

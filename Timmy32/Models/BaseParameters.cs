@@ -1,10 +1,5 @@
 ﻿using McMaster.Extensions.CommandLineUtils;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Timmy32.Exceptions;
 
 namespace Timmy32.Models
@@ -40,7 +35,7 @@ namespace Timmy32.Models
         {
             var isConnected = false;
           
-                timmy.ConnectByIp(Ip, Port, Password, MachinNo);
+             isConnected=  timmy.ConnectByIp(Ip, Port, Password, MachinNo);
             
             if(!isConnected)
                 console.WriteLine(Constants.FormatErrortMessage(Constants.ConnectionFailed));

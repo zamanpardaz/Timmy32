@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Timmy32
 {
@@ -21,6 +20,7 @@ namespace Timmy32
         }
         public bool ConnectByIp(string ip, int port, int password = 0, int machineNo = 1)
         {
+       
             _machineNo = machineNo;
             var isSet = client.SetIPAddress(ref ip, port, password);
             if (!isSet)
@@ -506,6 +506,14 @@ namespace Timmy32
 
             return myArray;
 
+        }
+
+        public bool SetValidExpireDate(int userId,DateTime start, DateTime end)
+        {
+            var result=client.SetUserCtrl(_machineNo, userId, 0, 0, start.Year, start.Month, start.Day,
+                end.Year, end.Month, end.Day);
+
+            return result;
         }
 
     }
