@@ -1,15 +1,20 @@
 using System;
+using System.IO;
 using McMaster.Extensions.CommandLineUtils;
 using Timmy32.Exceptions;
 using Timmy32.Models;
 
 namespace Timmy32.Commands
 {
-    [Command(Description = "Delete User")]
-    class DeleteUser : BaseParameters
+    [Command(Description = "Upload Photo")]
+    class UploadPhoto : BaseParameters
     {
         [Option(ShortName = "u",Description = "User ID")]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
+        
+        [Option(ShortName = "s",Description = "image address")]
+        public string Source { get; set; }
+        
         public void OnExecute(IConsole console)
         {
             Timmy timmy = new Timmy();
@@ -20,7 +25,8 @@ namespace Timmy32.Commands
                 return;
             }
 
-            var result = timmy.DeleteUser(UserId);
+            var photo = File.ReadAllBytes(Source);
+            var result = timmy.UploadPhoto(MachinNo,Int32.Parse(UserId),photo );
 
             Console.WriteLine(Constants.FormatMessage(result.ToString().ToLower()));
         }

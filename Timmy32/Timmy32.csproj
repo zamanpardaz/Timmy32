@@ -79,6 +79,7 @@
     <Compile Include="Commands\DeletePassword.cs" />
     <Compile Include="Commands\DeleteUser.cs" />
     <Compile Include="Commands\Disable.cs" />
+    <Compile Include="Commands\DownloadPhoto.cs" />
     <Compile Include="Commands\Enable.cs" />
     <Compile Include="Commands\Getface.cs" />
     <Compile Include="Commands\Getfingerprint.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Commands\Setprivilege.cs" />
     <Compile Include="Commands\SetUserExpiration.cs" />
     <Compile Include="Commands\SetuserUTF8.cs" />
+    <Compile Include="Commands\UploadPhoto.cs" />
     <Compile Include="Commands\Version.cs" />
     <Compile Include="Commands\Gettime.cs" />
     <Compile Include="Commands\Info.cs" />

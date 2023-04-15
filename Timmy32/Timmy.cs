@@ -516,5 +516,43 @@ namespace Timmy32
             return result;
         }
 
+
+        public bool UploadPhoto(int machineNo,int userId,byte[] photo)
+        {
+            int vPhotoSize = photo.Length;
+
+            int[] indexDataFacePhoto = new int[400800];
+            IntPtr ptrIndexFacePhoto = Marshal.AllocHGlobal(indexDataFacePhoto.Length);
+            
+                
+            Marshal.Copy(photo, 0, ptrIndexFacePhoto, photo.Length);                
+            var bRet = client.SetEnrollPhotoCS(machineNo, userId, photo.Length, ptrIndexFacePhoto);
+            return bRet;
+        }
+        public string DownloadPhoto(int machineNo,int userId)
+        {
+            int vPhotoSize = 0;
+            int[] FacedwData = new int[1888 / 4];
+            int[] indexDataFacePhoto = new int[400800];
+            object obj = new System.Runtime.InteropServices.VariantWrapper(FacedwData);
+            IntPtr ptrIndexFacePhoto = Marshal.AllocHGlobal(indexDataFacePhoto.Length);
+            var photoRet = GetEnrollPhotoCS(machineNo, userId, ref vPhotoSize, ptrIndexFacePhoto);
+            if (photoRet)
+            {
+                byte[] mbytCurEnrollData = new byte[vPhotoSize];
+                Marshal.Copy(ptrIndexFacePhoto, mbytCurEnrollData, 0, vPhotoSize);
+                var base64 = Convert.ToBase64String(mbytCurEnrollData);
+                return base64;
+
+            }
+
+            return null;
+        }
+        private bool GetEnrollPhotoCS(int machineNo,int enrollNo,ref int photoSize,IntPtr enrollPhoto)
+        {
+            var photo = client.GetEnrollPhotoCS(machineNo, enrollNo, ref photoSize, enrollPhoto);
+            return photo;
+        }
+
     }
 }

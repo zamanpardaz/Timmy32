@@ -1,6 +1,7 @@
 ﻿
 using McMaster.Extensions.CommandLineUtils;
 using System;
+using System.IO;
 using System.Text;
 using Timmy32.Commands;
 //
@@ -11,8 +12,10 @@ using Timmy32.Commands;
 //         static void Main(string[] args)
 //         {
 //             var timmy = new Timmy();
-//             timmy.ConnectByIp("192.168.1.161", 5005, 0, 1);
-//             var users = timmy.DeleteUser(1);
+//             timmy.ConnectByIp("192.168.1.225", 5005, 0, 1);
+//             var bytes=File.ReadAllBytes(@"d:\\photo.jpg");
+//
+//             var photo = timmy.UploadPhoto(1,1,bytes);
 //
 //         }
 //
@@ -55,6 +58,8 @@ namespace Timmy32
     [Subcommand("delfinger", typeof(Commands.DeleteFinger))]
     [Subcommand("dellogs", typeof(Commands.DeleteLogs))]
     [Subcommand("setExpire",typeof(Commands.SetUserExpiration))]
+    [Subcommand("downloadphoto",typeof(Commands.DownloadPhoto))]
+    [Subcommand("uploadphoto",typeof(Commands.UploadPhoto))]
     class Program
     {
         static int Main(string[] args)
