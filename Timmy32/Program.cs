@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Text;
 using Timmy32.Commands;
-//
+
 // namespace Timmy32
 // {
 //     class Program
@@ -13,9 +13,8 @@ using Timmy32.Commands;
 //         {
 //             var timmy = new Timmy();
 //             timmy.ConnectByIp("192.168.1.225", 5005, 0, 1);
-//             var bytes=File.ReadAllBytes(@"d:\\photo.jpg");
-//
-//             var photo = timmy.UploadPhoto(1,1,bytes);
+//             var bret = timmy.SetCardNo(1, 0,1001);
+//             var err = timmy.GetError();
 //
 //         }
 //
@@ -69,7 +68,7 @@ namespace Timmy32
             // var users = timmy.SetUser(new User()
             // {
             //     Id = 1002,
-            //     Name = "علی یگانه مقدم"
+            //     Name = "علی یگانه مقدم"÷ثبت 
             // });
             return CommandLineApplication.Execute<Program>(args);
         }

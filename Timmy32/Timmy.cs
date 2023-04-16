@@ -221,9 +221,11 @@ namespace Timmy32
 
         public bool SetCardNo(int userId,int privelege,int cardNo)
         {
+            DisableDevice();
             int[] FacedwData = new int[1888 / 4];
             object obj2 = new System.Runtime.InteropServices.VariantWrapper(FacedwData);
-            var bret = client.SetEnrollData(-_machineNo, userId, 1, 11, privelege, ref obj2, cardNo);
+            var bret = client.SetEnrollData(_machineNo, userId, 1, 11, privelege, ref obj2, cardNo);
+            EnableDevice();
 
             return bret;
         }
@@ -233,7 +235,7 @@ namespace Timmy32
         {
             int[] FacedwData = new int[1888 / 4];
             object obj2 = new System.Runtime.InteropServices.VariantWrapper(FacedwData);
-            var bret = client.SetEnrollData(-_machineNo, userId, 1, 11, privelege, ref obj2, password);
+            var bret = client.SetEnrollData(-_machineNo, userId, 1, 10, privelege, ref obj2, password);
 
             return bret;
         }

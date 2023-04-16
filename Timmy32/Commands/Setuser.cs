@@ -46,6 +46,8 @@ namespace Timmy32.Commands
                 return;
             }
 
+            timmy.SetCardNo(UserId, 0, UserId);
+
             Console.WriteLine(Constants.FormatMessage(result.ToString().ToLower()));
         }
     }
