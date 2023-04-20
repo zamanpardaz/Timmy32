@@ -47,7 +47,7 @@ namespace Timmy32
        
         public bool DeleteUser(int userId)
         {
-            return client.DeleteUserCtrl(_machineNo, userId);
+            return client.DeleteEnrollData(_machineNo, userId,1,12);
         }
         
         public bool DeletePassword(int userId)
