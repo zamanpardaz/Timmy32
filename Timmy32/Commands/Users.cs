@@ -21,7 +21,7 @@ namespace Timmy32.Commands
                 return;
             }
 
-            var users = timmy.GetUsers();
+            var users = timmy.GetAllUsers();
 
             if (users.Count == 0)
             {

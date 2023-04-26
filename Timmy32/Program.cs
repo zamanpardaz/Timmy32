@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Text;
 using Timmy32.Commands;
-
+//
 // namespace Timmy32
 // {
 //     class Program
@@ -12,8 +12,8 @@ using Timmy32.Commands;
 //         static void Main(string[] args)
 //         {
 //             var timmy = new Timmy();
-//             timmy.ConnectByIp("192.168.1.225", 5005, 0, 1);
-//             var bret = timmy.SetCardNo(1, 0,1001);
+//             timmy.ConnectByIp("192.168.1.103", 5005, 0, 1);
+//             var bret = timmy.GetAllUsers();
 //             var err = timmy.GetError();
 //
 //         }

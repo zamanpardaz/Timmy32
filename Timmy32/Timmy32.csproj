@@ -47,13 +47,8 @@
     <Reference Include="Humanizer, Version=2.3.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
       <HintPath>..\packages\Humanizer.Core.2.3.3\lib\netstandard2.0\Humanizer.dll</HintPath>
     </Reference>
-    <Reference Include="Interop.FPCLOCK_SVRLib">
-      <HintPath>..\..\..\documents\Devices\Timmy\Interop.FPCLOCK_SVRLib.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="Interop.FP_CLOCKLib">
-      <HintPath>..\..\..\documents\Devices\Timmy\Interop.FP_CLOCKLib.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>newDll\Interop.FP_CLOCKLib.dll</HintPath>
     </Reference>
     <Reference Include="McMaster.Extensions.CommandLineUtils, Version=2.2.4.0, Culture=neutral, PublicKeyToken=6f71cb76b82f055d, processorArchitecture=MSIL">
       <HintPath>..\packages\McMaster.Extensions.CommandLineUtils.2.2.4\lib\net45\McMaster.Extensions.CommandLineUtils.dll</HintPath>
@@ -118,6 +113,8 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="newDll\Interop.FP_CLOCKLib.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

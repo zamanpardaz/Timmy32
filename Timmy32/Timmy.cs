@@ -258,6 +258,7 @@ namespace Timmy32
 
             return (string)obj;
         }
+        [Obsolete]
         public List<User> GetUsers()
         {
 
@@ -323,6 +324,56 @@ namespace Timmy32
             return users;
         }
 
+        public List<User> GetAllUsers()
+        {
+            
+            int dwEnrollNumber = 0;
+            int dwEnMachineID = 0;
+            int dwBackupNum = 0;
+            int dwPrivilegeNum = 0;
+            int dwEnable = 0;
+            int dwPassWord = 0;
+            int vPhotoSize = 0;
+            
+            var bret = client.ReadAllUserIDLongID(_machineNo);
+
+            var users = new List<User>();
+
+            do
+            {
+                
+                string strEnrollID = "";
+                object EnrollIDobj = new System.Runtime.InteropServices.VariantWrapper(strEnrollID);
+                
+                bret = client.GetAllUserIDLongID(
+                    _machineNo,
+                    ref EnrollIDobj,
+                    ref dwBackupNum,
+                    ref dwPrivilegeNum,
+                    ref dwEnable
+                );
+
+
+                var s = (string) EnrollIDobj;
+                
+                if(String.IsNullOrEmpty(s.Trim()))
+                    continue;
+                var enrollNo = int.Parse(s);
+                
+                var user = new User()
+                {
+                    Id = enrollNo,
+                    Enabled = dwEnable == 1,
+                    Privilege = dwPrivilegeNum,
+                    Name = GetName(enrollNo)
+                };
+
+                users.Add(user);
+
+            } while (bret);
+
+            return users;
+        }
         public List<GeneralLogInfo> GetAllLogs()
         {
             GeneralLogInfo gLogInfo = new GeneralLogInfo();
