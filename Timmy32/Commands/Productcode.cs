@@ -11,7 +11,7 @@ namespace Timmy32.Commands
         public void OnExecute(IConsole console)
         {
             Timmy timmy = new Timmy();
-            var isConnected = timmy.ConnectByIp(Ip, Port, Password, MachinNo);
+            var isConnected = Connect(timmy, console);
 
             if (!isConnected)
             {

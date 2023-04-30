@@ -31,10 +31,10 @@ namespace Timmy32
 
         }
         
-        public bool ConnectByUsb(string ip, int port, int password = 0, int machineNo = 1)
+        public bool ConnectByUsb(int machineNo = 1)
         {
             _machineNo = machineNo;
-            var isSet = client.SetIPAddress(ref ip, port, password);
+            var isSet = client.IsUSB = true;
             if (!isSet)
                 return false;
             var isConnected = client.OpenCommPort(_machineNo);
