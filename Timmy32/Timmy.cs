@@ -258,7 +258,11 @@ namespace Timmy32
 
             return (string)obj;
         }
-        [Obsolete]
+        
+        /// <summary>
+        /// working with old desvices like F631
+        /// </summary>
+        /// <returns></returns>
         public List<User> GetUsers()
         {
 
@@ -324,6 +328,10 @@ namespace Timmy32
             return users;
         }
 
+        /// <summary>
+        /// Working with New Devices Like AI series
+        /// </summary>
+        /// <returns></returns>
         public List<User> GetAllUsers()
         {
             
@@ -337,6 +345,8 @@ namespace Timmy32
             
             var bret = client.ReadAllUserIDLongID(_machineNo);
 
+            if (bret == false)
+                return null;
             var users = new List<User>();
 
             do

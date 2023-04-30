@@ -23,6 +23,9 @@ namespace Timmy32.Commands
 
             var users = timmy.GetAllUsers();
 
+            if (users == null)
+                users = timmy.GetUsers();
+
             if (users.Count == 0)
             {
                 console.WriteLine(Constants.FormatMessage(Constants.NoData));
