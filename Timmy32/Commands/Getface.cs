@@ -29,12 +29,17 @@ namespace Timmy32.Commands
             if (bytes == null)
             {
                 console.WriteLine(Constants.FormatMessage(Constants.NoData));
+                timmy.DisConnect();
+
                 return;
             }
 
             var result = Convert.ToBase64String(bytes);
 
             Console.WriteLine(Constants.FormatMessage(result));
+            
+            timmy.DisConnect();
+
         }
     }
 

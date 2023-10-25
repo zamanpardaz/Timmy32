@@ -35,10 +35,15 @@ namespace Timmy32.Commands
             if (result == false)
             {
                 WriteErrorCode(timmy, console);
+                timmy.DisConnect();
+
                 return;
             }
 
             Console.WriteLine(Constants.FormatMessage(result.ToString().ToLower()));
+            
+            timmy.DisConnect();
+
         }
     }
 }

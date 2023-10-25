@@ -26,11 +26,18 @@ namespace Timmy32.Commands
             var result = timmy.GetName(UserId);
 
             if (result == null)
+            {
                 WriteErrorCode(timmy, console);
+                timmy.DisConnect();
+                return;
+            }
 
             var bytes = Encoding.UTF8.GetBytes(result);
             var base64 = Convert.ToBase64String(bytes);
             Console.WriteLine(Constants.FormatMessage(base64));
+            
+            timmy.DisConnect();
+
         }
     }
 }

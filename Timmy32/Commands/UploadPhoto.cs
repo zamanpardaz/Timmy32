@@ -25,10 +25,15 @@ namespace Timmy32.Commands
                 return;
             }
 
+            timmy.DisableDevice();
             var photo = File.ReadAllBytes(Source);
             var result = timmy.UploadPhoto(MachinNo,Int32.Parse(UserId),photo );
 
             Console.WriteLine(Constants.FormatMessage(result.ToString().ToLower()));
+
+            timmy.EnableDevice();
+            timmy.DisConnect();
+
         }
     }
 }

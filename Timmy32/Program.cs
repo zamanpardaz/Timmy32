@@ -59,6 +59,7 @@ namespace Timmy32
     [Subcommand("setExpire",typeof(Commands.SetUserExpiration))]
     [Subcommand("downloadphoto",typeof(Commands.DownloadPhoto))]
     [Subcommand("uploadphoto",typeof(Commands.UploadPhoto))]
+    [Subcommand("getfingerprints",typeof(Commands.Getfingerprints))]
     class Program
     {
         static int Main(string[] args)

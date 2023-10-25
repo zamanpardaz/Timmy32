@@ -35,6 +35,9 @@ namespace Timmy32.Commands
 
 
             Console.WriteLine(Constants.FormatMessage(result.ToString().ToLower()));
+            
+            timmy.DisConnect();
+
         }
     }
 

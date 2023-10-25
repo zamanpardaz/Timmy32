@@ -23,6 +23,8 @@ namespace Timmy32.Commands
             var result = timmy.DeleteUser(UserId);
 
             Console.WriteLine(Constants.FormatMessage(result.ToString().ToLower()));
+            timmy.DisConnect();
+
         }
     }
 }

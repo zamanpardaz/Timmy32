@@ -22,6 +22,9 @@ namespace Timmy32.Commands
 
 
             console.WriteLine(Constants.FormatMessage(Constants.Done));
+            
+            timmy.DisConnect();
+
         }
     }
 }

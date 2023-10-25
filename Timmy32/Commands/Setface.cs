@@ -36,6 +36,9 @@ namespace Timmy32.Commands
             var result = timmy.SetFace(UserId, FaceIndex, bytes);
 
             Console.WriteLine(Constants.FormatMessage(result.ToString().ToLower()));
+            
+            timmy.DisConnect();
+
         }
     }
 

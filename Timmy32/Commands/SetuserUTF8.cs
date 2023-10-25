@@ -43,12 +43,17 @@ namespace Timmy32.Commands
             if(result==false)
             {
                 WriteErrorCode(timmy, console);
+                timmy.DisConnect();
+
                 return;
             }
 
             timmy.SetCardNo(UserId, 0, UserId);
 
             Console.WriteLine(Constants.FormatMessage(result.ToString().ToLower()));
+            
+            timmy.DisConnect();
+
         }
     }
 }

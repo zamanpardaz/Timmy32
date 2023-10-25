@@ -24,6 +24,8 @@ namespace Timmy32.Commands
             if (logs.Count == 0)
             {
                 console.WriteLine(Constants.FormatMessage(Constants.NoData));
+                timmy.DisConnect();
+
                 return;
             }
 
@@ -41,6 +43,7 @@ namespace Timmy32.Commands
                 console.Write(log.dwSecond);
                 console.WriteLine();
             }
+            timmy.DisConnect();
 
         }
     }

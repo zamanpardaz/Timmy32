@@ -28,8 +28,8 @@ namespace Timmy32.Commands
             console.Write(info.PowerOffTime + ",");
             console.Write(info.ReVerifyTime + ",");
             console.Write(info.SlogWarning);
-
-
+            
+            timmy.DisConnect();
 
         }
     }

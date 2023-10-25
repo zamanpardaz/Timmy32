@@ -29,6 +29,8 @@ namespace Timmy32.Commands
             if (users.Count == 0)
             {
                 console.WriteLine(Constants.FormatMessage(Constants.NoData));
+                timmy.DisConnect();
+
                 return;
             }
 
@@ -49,6 +51,8 @@ namespace Timmy32.Commands
                 console.Write(user.Enabled);
                 console.WriteLine();
             }
+
+            timmy.DisConnect();
 
         }
     }

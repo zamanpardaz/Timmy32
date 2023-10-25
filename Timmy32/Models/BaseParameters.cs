@@ -45,7 +45,7 @@ namespace Timmy32.Models
             }
             
             if(!isConnected)
-                console.WriteLine(Constants.FormatErrortMessage(Constants.ConnectionFailed));
+                console.WriteLine(Constants.FormatErrortMessage(Constants.ConnectionFailed + "(" + timmy.GetError() +")"));
 
             return isConnected;
         }

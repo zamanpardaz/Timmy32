@@ -32,10 +32,13 @@ namespace Timmy32.Commands
             if (photo == null)
             {
                 console.WriteLine(Constants.FormatMessage(Constants.NoData));
+                timmy.DisConnect();
+
                 return;
             }
 
             Console.WriteLine(Constants.FormatMessage(photo));
+            timmy.DisConnect();
 
         }
     }

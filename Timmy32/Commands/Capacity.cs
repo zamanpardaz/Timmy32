@@ -29,6 +29,7 @@ namespace Timmy32.Commands
             console.Write(capacity.FingerPrintCount + ",");
             console.Write(capacity.WhatCount);
 
+            timmy.DisConnect();
 
 
         }

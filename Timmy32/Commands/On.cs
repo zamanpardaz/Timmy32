@@ -15,6 +15,9 @@ namespace Timmy32.Commands
             timmy.PowerOn();
 
             Console.WriteLine(Constants.FormatMessage(Constants.Done));
+            
+            timmy.DisConnect();
+
         }
     }
 
