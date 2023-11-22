@@ -27,7 +27,7 @@ namespace Timmy32.Commands
 
             timmy.DisableDevice();
             var photo = File.ReadAllBytes(Source);
-            var result = timmy.UploadPhoto(MachinNo,Int32.Parse(UserId),photo );
+            var result = timmy.UploadPhoto(MachinNo,long.Parse(UserId),photo );
 
             Console.WriteLine(Constants.FormatMessage(result.ToString().ToLower()));
 

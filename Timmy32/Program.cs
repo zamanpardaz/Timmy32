@@ -12,8 +12,14 @@ using Timmy32.Commands;
 //         static void Main(string[] args)
 //         {
 //             var timmy = new Timmy();
-//             timmy.ConnectByIp("192.168.1.161",5005,0,1);
-//             var bret = timmy.GetUsers();
+//             timmy.ConnectByIp("192.168.1.224",5005,0,1);
+//             var bret = timmy.SetUser(new User()
+//             {
+//                 Id = 2,
+//                 Name = "rahman",
+//                 Privilege = 0,
+//                 Enabled = true
+//             });
 //             var err = timmy.GetError();
 //
 //         }
@@ -60,6 +66,9 @@ namespace Timmy32
     [Subcommand("downloadphoto",typeof(Commands.DownloadPhoto))]
     [Subcommand("uploadphoto",typeof(Commands.UploadPhoto))]
     [Subcommand("getfingerprints",typeof(Commands.Getfingerprints))]
+    [Subcommand("User",typeof(Commands.GetUser))]
+    [Subcommand("RemoteFaceScan",typeof(Commands.RemoteFaceScan))]
+    [Subcommand("RemoteFingerPrint",typeof(Commands.RemoteFingerPrint))]
     class Program
     {
         static int Main(string[] args)

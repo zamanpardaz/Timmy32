@@ -11,7 +11,7 @@ namespace Timmy32.Commands
     {
 
         [Option(ShortName = "u")]
-        public int UserId { get; set; }
+        public long UserId { get; set; }
 
 
         [Option(ShortName = "n")]
@@ -48,7 +48,6 @@ namespace Timmy32.Commands
                 return;
             }
 
-            timmy.SetCardNo(UserId, 0, UserId);
 
             Console.WriteLine(Constants.FormatMessage(result.ToString().ToLower()));
             

@@ -27,7 +27,7 @@ namespace Timmy32.Commands
                 return;
             }
 
-            var photo = timmy.DownloadPhoto(MachinNo, int.Parse(UserId));
+            var photo = timmy.DownloadPhoto(MachinNo, long.Parse(UserId));
 
             if (photo == null)
             {

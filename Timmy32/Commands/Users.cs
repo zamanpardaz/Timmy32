@@ -1,5 +1,6 @@
 ﻿using McMaster.Extensions.CommandLineUtils;
 using System;
+using System.Collections.Generic;
 using System.Text;
 using Timmy32.Exceptions;
 using Timmy32.Models;
@@ -21,10 +22,18 @@ namespace Timmy32.Commands
                 return;
             }
 
-            var users = timmy.GetAllUsers();
+            List<User> users = new List<User>();
 
-            if (users == null)
+            if (timmy.IsAI())
+            {
+                users=timmy.GetAllUsers();
+
+            }
+            else
+            {
                 users = timmy.GetUsers();
+            }
+
 
             if (users.Count == 0)
             {

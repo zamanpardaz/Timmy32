@@ -82,11 +82,14 @@
     <Compile Include="Commands\Getfingerprints.cs" />
     <Compile Include="Commands\Getname.cs" />
     <Compile Include="Commands\GetWorkCode.cs" />
+    <Compile Include="Commands\RemoteFaceScan.cs" />
+    <Compile Include="Commands\RemoteFingerPrint.cs" />
     <Compile Include="Commands\Setprivilege.cs" />
     <Compile Include="Commands\SetUserExpiration.cs" />
     <Compile Include="Commands\SetuserUTF8.cs" />
     <Compile Include="Commands\SetWorkCode.cs" />
     <Compile Include="Commands\UploadPhoto.cs" />
+    <Compile Include="Commands\User.cs" />
     <Compile Include="Commands\Version.cs" />
     <Compile Include="Commands\Gettime.cs" />
     <Compile Include="Commands\Info.cs" />
@@ -118,6 +121,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="newDll\AxInterop.FP_CLOCKLib.dll" />
     <Content Include="newDll\Interop.FP_CLOCKLib.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

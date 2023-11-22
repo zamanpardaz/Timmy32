@@ -45,19 +45,54 @@ namespace Timmy32
 
 
        
-        public bool DeleteUser(int userId)
+        public bool DeleteUser(long userId)
         {
-            return client.DeleteEnrollData(_machineNo, userId,1,12);
+            
+            if(!IsAI())
+                return client.DeleteEnrollData(_machineNo, (int)userId,1,12);
+            
+            object EnrollIDobj = new System.Runtime.InteropServices.VariantWrapper(userId.ToString());
+
+            return client.DeleteUserInfoLongID(_machineNo,EnrollIDobj);
         }
         
-        public bool DeletePassword(int userId)
+        public bool DeletePassword(long userId)
         {
-            return client.DeleteEnrollData(_machineNo, userId,1,10); //0-9 fingers | 10 password  11 cardata | 12 = 0-11 | 13 all fingers |20-27 : faces
+            var username = GetName(userId);
+
+            var userInfo = GetUserInfo(userId);
+
+            if (userInfo == null)
+                return false;
+
+            userInfo.Password = 0;
+            var bret = SetUserInfo(userId, userInfo);
+
+            return bret;
         }
 
-        public bool DeleteFinger(int userId, int fingerIndex)
+        private bool SetUserInfo(long userId, UserInfo userInfo)
         {
-            return client.DeleteEnrollData(_machineNo, userId, 1, fingerIndex);
+            object EnrollIDobj = new System.Runtime.InteropServices.VariantWrapper(userId.ToString());
+            object obj = new System.Runtime.InteropServices.VariantWrapper(userInfo.Name);
+
+            var bret = client.SetUserInfoLongID(_machineNo,  ref EnrollIDobj,  ref obj,userInfo.Password,
+                userInfo.Card,userInfo.PostID,userInfo.Privilege,userInfo.Enabled,userInfo.ShiftID,userInfo.ZoneID,
+                userInfo.GroupID,userInfo.UserCtrl,userInfo.StartTime,userInfo.EndTime,userInfo.BirthDay);
+
+            return bret;
+        }
+
+        public bool DeleteFinger(long userId, int fingerIndex)
+        {
+
+            if (!IsAI())
+            {
+                return client.DeleteEnrollData(_machineNo, (int)userId, 1, fingerIndex);
+            }
+            object EnrollIDobj = new System.Runtime.InteropServices.VariantWrapper(userId.ToString());
+
+            return client.DeleteFPDataLongID(_machineNo, EnrollIDobj, fingerIndex);
         }
         public void DisConnect()
         {
@@ -199,64 +234,132 @@ namespace Timmy32
         public bool SetUserUTF8(User user)
         {
             object obj = new System.Runtime.InteropServices.VariantWrapper(user.Name);
-            var bret = client.SetUserNameUTF8(0, _machineNo, user.Id, 1, ref obj);
+            var bret = client.SetUserNameUTF8(0, _machineNo, (int)user.Id, 1, ref obj);
 
             return bret;
         }
 
+        private int GetTimeStamp(DateTime dt)
+        {
+            DateTime dateStart = new DateTime(2000, 1, 1, 0, 0, 0);
+            int timeStamp = Convert.ToInt32((dt - dateStart).TotalSeconds);
+            return timeStamp;
+        }
+        private DateTime GetDateTime(int timeStamp)
+        {
+            DateTime dtStart =new DateTime(2000, 1, 1, 0, 0, 0);
+            long lTime = ((long)timeStamp * 10000000);
+            TimeSpan toNow = new TimeSpan(lTime);
+            DateTime targetDt = dtStart.Add(toNow);
+            return targetDt;
+        }
+
+        public bool IsAI()
+        {
+            var devInfo = GetProductCode();
+            return devInfo.ToLower().StartsWith("ai");
+        }
         public bool SetUser(User user)
         {
-            object obj = new System.Runtime.InteropServices.VariantWrapper(user.Name);
-            var bret = client.SetUserName(0, _machineNo, user.Id, 1, ref obj);
-
+            
+            if (!IsAI())
+            {
+                object obj = new System.Runtime.InteropServices.VariantWrapper(user.Name);
+                var bret1 = client.SetUserName(0, _machineNo, (int)user.Id, 1, ref obj);
+                SetCardNo((int) user.Id, user.Privilege, (int) user.Id);
+                return bret1;
+            }
+            
+            var userInfo = new UserInfo();
+            userInfo.Name = user.Name;
+            userInfo.Enabled = user.Enabled?1:0;
+            var bret = SetUserInfo(user.Id,userInfo);
             return bret;
         }
 
-        public bool ModifyPrivilege(int userId,int privilege)
+        public bool ModifyPrivilege(long userId,int privilege)
         {
-            var bret = client.ModifyPrivilege(_machineNo, userId,1, 12, privilege);
 
+            if (!IsAI())
+            {
+                var bret1 = client.ModifyPrivilege(_machineNo, (int)userId,1, 12, privilege);
+
+                return bret1;
+            }
+            var userInfo = GetUserInfo(userId);
+
+            if (userInfo == null)
+                return false;
+            
+            userInfo.Privilege = privilege;
+
+            var bret = SetUserInfo(userId, userInfo);
             return bret;
         }
 
-        public bool SetCardNo(int userId,int privelege,int cardNo)
+        public bool SetCardNo(long userId,int privelege,int cardNo)
         {
+            var bret = false;
             DisableDevice();
+
+            if (IsAI())
+            {
+                EnableDevice();
+
+                var userInfo = GetUserInfo(userId);
+
+                if (userInfo == null)
+                {
+                    EnableDevice();
+                    return false;
+                }
+
+                userInfo.Card = cardNo;
+                SetUserInfo(userId,userInfo);
+                return bret;
+            }
             int[] FacedwData = new int[1888 / 4];
             object obj2 = new System.Runtime.InteropServices.VariantWrapper(FacedwData);
-            var bret = client.SetEnrollData(_machineNo, userId, 1, 11, privelege, ref obj2, cardNo);
+            bret = client.SetEnrollData(_machineNo, (int)userId, 1, 11, privelege, ref obj2, cardNo);
             EnableDevice();
 
             return bret;
         }
 
 
-        public bool SetPassword(int userId, int privelege, int password)
+        public bool SetPassword(long userId, int privilege, int password)
         {
-            int[] FacedwData = new int[1888 / 4];
-            object obj2 = new System.Runtime.InteropServices.VariantWrapper(FacedwData);
-            var bret = client.SetEnrollData(-_machineNo, userId, 1, 10, privelege, ref obj2, password);
+            if (!IsAI())
+            {
+                int[] FacedwData = new int[1888 / 4];
+                object obj2 = new System.Runtime.InteropServices.VariantWrapper(FacedwData);
+                var bret1 = client.SetEnrollData(-_machineNo, (int)userId,
+                    1, 10, privilege, ref obj2, password);
 
+                return bret1;
+            }
+            
+            var userInfo = GetUserInfo(userId);
+            userInfo.Privilege = privilege;
+            userInfo.Password = password;
+
+            var bret = SetUserInfo(userId, userInfo);
             return bret;
         }
 
 
-        public string GetName(int id)
+        public string GetName(long id)
         {
             string strName = "";
             object obj = new System.Runtime.InteropServices.VariantWrapper(strName);
+            object enrollId = new System.Runtime.InteropServices.VariantWrapper(id);
 
-            bool bRet = client.GetUserNameUTF8(0,
-              _machineNo,
-              id,
-              1,
-              ref obj
-              );
 
-            if (!bRet)
+            var userInfo = GetUserInfo(id);
+            if (userInfo==null)
                 return null;
 
-            return (string)obj;
+            return userInfo.Name;
         }
         
         /// <summary>
@@ -292,19 +395,10 @@ namespace Timmy32
                 );
                 
                 
-                int[] dwData = new int[1420 / 4];
                 
                 int[] FacedwData = new int[1888 / 4];
-                int[] indexDataFacePhoto = new int[400800];
                 object obj = new System.Runtime.InteropServices.VariantWrapper(FacedwData);
-
-                client.GetEnrollData(_machineNo,
-               dwEnrollNumber,
-               dwEnMachineID, 
-               dwBackupNum,
-               ref dwPrivilegeNum,
-               ref obj,
-               ref dwPassWord);
+                
 
                 if (dwEnrollNumber == 0)
                 {
@@ -320,12 +414,27 @@ namespace Timmy32
                     Id = dwEnrollNumber,
                     Enabled = true,
                     Privilege = dwPrivilegeNum,
-                    Name = GetName(dwEnrollNumber)
+                    Name ="" //GetName(dwEnrollNumber)
                 });
 
             } while (bRet);
 
             return users;
+        }
+
+        public User GetUser(long id)
+        {
+            var userInfo = GetUserInfo(id);
+            if (userInfo == null)
+                return null;
+
+            return new User()
+            {
+                Id = id,
+                Enabled = userInfo.Enabled == 1,
+                Privilege = userInfo.Privilege,
+                Name = userInfo.Name
+            };
         }
 
         /// <summary>
@@ -368,7 +477,7 @@ namespace Timmy32
                 
                 if(String.IsNullOrEmpty(s.Trim()))
                     continue;
-                var enrollNo = int.Parse(s);
+                var enrollNo = long.Parse(s);
                 
                 var user = new User()
                 {
@@ -391,13 +500,15 @@ namespace Timmy32
             List<GeneralLogInfo> myArray = new List<GeneralLogInfo>();
 
 
-            var bRet = client.ReadAllGLogData(_machineNo);
+            var bRet = client.ReadGLogDataLongID(_machineNo,0);
             do
             {
-                bRet = client.GetAllGLogDataWithSecond(_machineNo,
-                ref gLogInfo.dwTMachineNumber,
-                ref gLogInfo.dwEnrollNumber,
-                ref gLogInfo.dwEMachineNumber,
+                
+                string strEnrollID = "";
+                object EnrollIDobj = new System.Runtime.InteropServices.VariantWrapper(strEnrollID);
+                
+                bRet = client.GetGLogDataLongID(_machineNo,
+                ref EnrollIDobj,
                 ref gLogInfo.dwVerifyMode,
                 ref gLogInfo.dwInout,
                 ref gLogInfo.dwEvent,
@@ -421,16 +532,26 @@ namespace Timmy32
         }
 
 
-        public byte[] GetFingerPrint(int userId, int fingerIndex)
+        public byte[] GetFingerPrint(long userId, int fingerIndex)
         {
             int[] dwData = new int[1420 / 4];
             int[] FacedwData = new int[1888 / 4];
             object obj = new System.Runtime.InteropServices.VariantWrapper(FacedwData);
-            int dwPassword = 0;
 
-            int privelege = 0;
+            object EnrollIDobj = new System.Runtime.InteropServices.VariantWrapper(userId.ToString());
 
-            var bret = client.GetEnrollData(_machineNo, userId, 1, fingerIndex, ref privelege, ref obj, ref dwPassword);
+            var bret = false;
+
+            if (IsAI())
+            {
+                bret = client.GetFPDataLongID(_machineNo, EnrollIDobj,  fingerIndex,  ref obj);
+            }
+            else
+            {
+                int dwPassword = 0;
+                int privelege = 0;
+                bret = client.GetEnrollData(_machineNo, (int)userId, 1, fingerIndex, ref privelege, ref obj, ref dwPassword);
+            }
 
             if (bret)
             {
@@ -447,28 +568,35 @@ namespace Timmy32
         }
 
 
-        public bool SetFingerPrint(int userId, int fingerIndex, byte[] bytes)
+        public bool SetFingerPrint(long userId, int fingerIndex, byte[] bytes)
         {
             int dwPassword = 0;
             object obj = new System.Runtime.InteropServices.VariantWrapper(bytes);
+            object EnrollIDobj = new System.Runtime.InteropServices.VariantWrapper(userId.ToString());
 
-            var result = client.SetEnrollData(_machineNo, userId, 1, fingerIndex, 0, ref obj, dwPassword);
+            var result = false;
+
+            if (IsAI())
+            {
+                result=client.SetFPDataLongID(_machineNo, EnrollIDobj, fingerIndex,  ref obj);
+            }
+            else
+            {
+                result = client.SetEnrollData(_machineNo, (int)userId, 1,
+                    fingerIndex, 0, ref obj, dwPassword);
+            }
+            
             return result;
         }
 
 
-        public void UploadPhoto(int userId, string src)
-        {
-            var bytes = Encoding.UTF8.GetBytes(src);
-            //client.SetEnrollPhoto(_machineNo, userId, bytes.Length, bytes[0]);
-        }
 
         public void DeleteAllLogs()
         {
             client.EmptyGeneralLogData(_machineNo);
         }
 
-        
+        //Just Working on non AI Devices
         public byte[] GetFace(int userId, int index)
         {
             int dwPrivilegeNum = 0;
@@ -505,6 +633,7 @@ namespace Timmy32
             return _indexDataFace;
         }
 
+        //just working on non Ai devices
         public bool SetFace(int userId, int faceIndex, byte[] bytes)
         {
             int dwPassword = 0;
@@ -514,6 +643,7 @@ namespace Timmy32
             return result;
         }
 
+        //just working on non ai devices
         public List<byte[]> GetFaces(int userId)
         {
             var list = new List<byte[]>();
@@ -571,16 +701,32 @@ namespace Timmy32
 
         }
 
-        public bool SetValidExpireDate(int userId,DateTime start, DateTime end)
+        public bool SetValidExpireDate(long userId,DateTime start, DateTime end)
         {
-            var result=client.SetUserCtrl(_machineNo, userId, 0, 0, start.Year, start.Month, start.Day,
-                end.Year, end.Month, end.Day);
 
+            if (!IsAI())
+            {
+                var result1=client.SetUserCtrl(_machineNo, (int)userId, 0, 0, start.Year, start.Month, start.Day,
+                    end.Year, end.Month, end.Day);
+
+                return result1;
+            }
+
+            var userInfo = GetUserInfo(userId);
+            if (userInfo == null)
+                return false;
+
+            userInfo.UserCtrl = 1;
+            userInfo.StartTime=GetTimeStamp(start);
+            userInfo.EndTime=GetTimeStamp(end);
+
+
+            var result = SetUserInfo(userId, userInfo);
             return result;
         }
 
 
-        public bool UploadPhoto(int machineNo,int userId,byte[] photo)
+        public bool UploadPhoto(int machineNo,long userId,byte[] photo)
         {
             int vPhotoSize = photo.Length;
 
@@ -588,17 +734,20 @@ namespace Timmy32
             IntPtr ptrIndexFacePhoto = Marshal.AllocHGlobal(indexDataFacePhoto.Length);
             
                 
-            Marshal.Copy(photo, 0, ptrIndexFacePhoto, photo.Length);                
-            var bRet = client.SetEnrollPhotoCS(machineNo, userId, photo.Length, ptrIndexFacePhoto);
+            Marshal.Copy(photo, 0, ptrIndexFacePhoto, photo.Length);        
+            object EnrollIDobj = new System.Runtime.InteropServices.VariantWrapper(userId.ToString());
+
+            var bRet = client.SetEnrollPhotoCSLongID(machineNo, EnrollIDobj, photo.Length, ptrIndexFacePhoto);
             return bRet;
         }
-        public string DownloadPhoto(int machineNo,int userId)
+        public string DownloadPhoto(int machineNo,long userId)
         {
             int vPhotoSize = 0;
             int[] FacedwData = new int[1888 / 4];
             int[] indexDataFacePhoto = new int[400800];
             object obj = new System.Runtime.InteropServices.VariantWrapper(FacedwData);
             IntPtr ptrIndexFacePhoto = Marshal.AllocHGlobal(indexDataFacePhoto.Length);
+            
             var photoRet = GetEnrollPhotoCS(machineNo, userId, ref vPhotoSize, ptrIndexFacePhoto);
             if (photoRet)
             {
@@ -611,13 +760,131 @@ namespace Timmy32
 
             return null;
         }
-        private bool GetEnrollPhotoCS(int machineNo,int enrollNo,ref int photoSize,IntPtr enrollPhoto)
+        private bool GetEnrollPhotoCS(int machineNo,long enrollNo,ref int photoSize,IntPtr enrollPhoto)
         {
-            var photo = client.GetEnrollPhotoCS(machineNo, enrollNo, ref photoSize, enrollPhoto);
+            object EnrollIDobj = new System.Runtime.InteropServices.VariantWrapper(enrollNo.ToString());
+
+            var photo = client.GetEnrollPhotoCSLongID(machineNo, EnrollIDobj, ref photoSize, enrollPhoto);
             return photo;
         }
 
-        
+        private bool RemoteAction(long userId, int backupNo)
+        {
 
+            var userInfo = GetUserInfo(userId);
+            if (userInfo == null)
+                return false;
+            
+            object EnrollIDobj = new System.Runtime.InteropServices.VariantWrapper(userId.ToString());
+            object Usernameobj = new System.Runtime.InteropServices.VariantWrapper(userInfo.Name);
+
+            bool bRet = client.AddUser(_machineNo,
+                ref EnrollIDobj,
+                backupNo,
+                userInfo.Privilege,
+                ref Usernameobj
+            );
+
+            return bRet;
+
+        }
+        public bool RemoteFingerPrint(long userId, int fingerIndex)
+        {
+            return RemoteAction(userId, fingerIndex);
+        }
+        public bool RemoteFaceScan(long userId)
+        {
+            return RemoteAction(userId, 50);
+
+        }
+
+        private UserInfo GetUserInfo(long id)
+        {
+            var strName = "";
+            object obj = new System.Runtime.InteropServices.VariantWrapper(strName);
+            object enrollId = new System.Runtime.InteropServices.VariantWrapper(id.ToString());
+            
+            int Password=0;
+            int Card=0;
+            int FaceFlag=0;
+            int FPFlag=0;
+            int PostID=0;
+            int Privilege=0;
+            int Enabled=0;
+            int ShiftID=0;
+            int ZoneID=0;
+            int GroupID=0;
+            int UserCtrl=0;	
+            int StartTime=0;
+            int EndTime=0;
+            int BirthDay=0;
+            long Card1 = 0;
+            
+            bool bRet = client.GetUserInfoLongID(_machineNo,
+                ref enrollId,
+                ref obj,
+                ref Password,
+                ref Card,
+                ref FaceFlag,
+                ref FPFlag,
+                ref PostID,
+                ref Privilege,
+                ref Enabled,
+                ref ShiftID,
+                ref ZoneID,
+                ref GroupID,
+                ref UserCtrl,
+                ref StartTime,
+                ref EndTime,
+                ref BirthDay
+            );
+
+            if (!bRet)
+                return null;
+
+            var userInfo = new UserInfo()
+            {
+                BirthDay = BirthDay,
+                FaceFlag = FaceFlag,
+                Password = Password,
+                Privilege = Privilege,
+                Card = Card,
+                Card1 = Card1,
+                Enabled = Enabled,
+                EndTime = EndTime,
+                StartTime = StartTime,
+                UserCtrl = UserCtrl,
+                FPFlag = FPFlag,
+                GroupID = GroupID,
+                PostID = PostID,
+                ShiftID = ShiftID,
+                ZoneID = ZoneID,
+                Name = (string)obj
+            };
+
+
+            return userInfo;
+        }
+    }
+
+    public class UserInfo
+    {
+        public int Password { get; set; }
+    
+        public int Card { get; set; }
+        public int FaceFlag { get; set; }
+        public int FPFlag { get; set; }
+        public int PostID { get; set; }
+        public int Privilege { get; set; }
+        public int Enabled { get; set; }
+        public int ShiftID { get; set; }
+        public int ZoneID { get; set; }
+        public int GroupID { get; set; }
+        public int UserCtrl { get; set; }	
+        public int StartTime { get; set; }
+        public int EndTime { get; set; }
+        public int BirthDay { get; set; }
+        public long Card1  { get; set; }
+        public string Name { get; set; }
     }
 }
