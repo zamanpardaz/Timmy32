@@ -12,14 +12,8 @@ using Timmy32.Commands;
 //         static void Main(string[] args)
 //         {
 //             var timmy = new Timmy();
-//             timmy.ConnectByIp("192.168.1.224",5005,0,1);
-//             var bret = timmy.SetUser(new User()
-//             {
-//                 Id = 2,
-//                 Name = "rahman",
-//                 Privilege = 0,
-//                 Enabled = true
-//             });
+//             timmy.ConnectByIp("192.168.1.100",5005,0,1);
+//             var bret = timmy.GetCapacity();
 //             var err = timmy.GetError();
 //
 //         }
@@ -27,6 +21,8 @@ using Timmy32.Commands;
 //
 //     }
 // }
+
+
 
 
 

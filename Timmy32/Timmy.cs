@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Timmy32
 {
@@ -71,11 +72,25 @@ namespace Timmy32
             return bret;
         }
 
+        public bool SetUserVerificationMode(long userId, int mode)
+        {
+            var userInfo = GetUserInfo(userId);
+
+            if (userInfo == null)
+                return false;
+
+            userInfo.UserCtrl = mode;
+            var ret = SetUserInfo(userId, userInfo);
+
+            return ret;
+        }
+        
         private bool SetUserInfo(long userId, UserInfo userInfo)
         {
             object EnrollIDobj = new System.Runtime.InteropServices.VariantWrapper(userId.ToString());
             object obj = new System.Runtime.InteropServices.VariantWrapper(userInfo.Name);
 
+            
             var bret = client.SetUserInfoLongID(_machineNo,  ref EnrollIDobj,  ref obj,userInfo.Password,
                 userInfo.Card,userInfo.PostID,userInfo.Privilege,userInfo.Enabled,userInfo.ShiftID,userInfo.ZoneID,
                 userInfo.GroupID,userInfo.UserCtrl,userInfo.StartTime,userInfo.EndTime,userInfo.BirthDay);
@@ -116,6 +131,32 @@ namespace Timmy32
             client.SetDeviceTime(_machineNo);
         }
 
+        private void setCapacity(DeviceCapacity deviceCapacity)
+        {
+            deviceCapacity.LogCapacity = 500 * 1000;
+            
+            var pcode = GetProductCode();
+            if (pcode.ToLower().StartsWith("ai810"))
+            {
+                deviceCapacity.UserCapacity = 50000;
+            }
+            else if (pcode.ToLower().StartsWith("ai518") || pcode.ToLower().StartsWith("ai806"))
+            {
+                deviceCapacity.UserCapacity = 5000;
+            }
+
+            deviceCapacity.FaceCapacity = deviceCapacity.UserCapacity;
+            deviceCapacity.FingerPrintCapacity = deviceCapacity.FaceCapacity * 2;
+
+            if (!pcode.ToLower().Contains("fp"))
+                deviceCapacity.FingerPrintCapacity = 0;
+            
+            var facePattern= @"f\d+";
+            var hasFaceAbility=Regex.IsMatch(pcode, facePattern);
+            if (!hasFaceAbility)
+                deviceCapacity.FaceCapacity = 0;
+            
+        }
 
         public DeviceCapacity GetCapacity()
         {
@@ -134,9 +175,10 @@ namespace Timmy32
             client.GetDeviceStatus(_machineNo, 5, ref slog);
             client.GetDeviceStatus(_machineNo, 6, ref glog);
             client.GetDeviceStatus(_machineNo, 7, ref w);
-
-
-            return new DeviceCapacity()
+            
+            
+            
+            var capacity= new DeviceCapacity()
             {
                 ManagerCount = mc,
                 UserCount = uc,
@@ -146,6 +188,10 @@ namespace Timmy32
                 SLogCount = slog,
                 WhatCount = w
             };
+
+            setCapacity(capacity);
+
+            return capacity;
         }
 
 
@@ -522,6 +568,7 @@ namespace Timmy32
 
                 if (bRet)
                 {
+                    gLogInfo.dwEnrollNumber =long.Parse((string) EnrollIDobj);
                     myArray.Add(gLogInfo);
                 }
 
@@ -675,9 +722,10 @@ namespace Timmy32
             var bRet = client.ReadGeneralLogData(_machineNo);
             do
             {
+                int id = 0;
                 bRet = client.GetGeneralLogDataWithSecond(_machineNo,
                 ref gLogInfo.dwTMachineNumber,
-                ref gLogInfo.dwEnrollNumber,
+                ref id,
                 ref gLogInfo.dwEMachineNumber,
                 ref gLogInfo.dwVerifyMode,
                 ref gLogInfo.dwInout,
@@ -692,6 +740,7 @@ namespace Timmy32
 
                 if (bRet)
                 {
+                    gLogInfo.dwEnrollNumber = id;
                     myArray.Add(gLogInfo);
                 }
 
@@ -715,8 +764,7 @@ namespace Timmy32
             var userInfo = GetUserInfo(userId);
             if (userInfo == null)
                 return false;
-
-            userInfo.UserCtrl = 1;
+            
             userInfo.StartTime=GetTimeStamp(start);
             userInfo.EndTime=GetTimeStamp(end);
 

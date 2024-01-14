@@ -18,7 +18,12 @@ namespace Timmy32.Commands
         {
             Timmy timmy = new Timmy();
 
-            
+            var isConnected = Connect(timmy, console);
+
+            if (!isConnected)
+            {
+                return;
+            }
 
 
             var result = timmy.RemoteFaceScan(UserId);

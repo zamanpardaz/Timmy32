@@ -9,5 +9,9 @@
         public int SLogCount { get; set; }
         public int GLogCount { get; set; }
         public int WhatCount { get; set; }
+        public int UserCapacity { get; set; }
+        public int FingerPrintCapacity { get; set; }
+        public int FaceCapacity { get; set; }
+        public int LogCapacity { get; set; }
     }
 }

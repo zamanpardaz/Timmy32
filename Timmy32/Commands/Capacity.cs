@@ -1,4 +1,5 @@
-﻿using McMaster.Extensions.CommandLineUtils;
+﻿using System;
+using McMaster.Extensions.CommandLineUtils;
 using Timmy32.Models;
 
 namespace Timmy32.Commands
@@ -20,14 +21,14 @@ namespace Timmy32.Commands
 
             var capacity = timmy.GetCapacity();
 
-            
-            console.Write(capacity.ManagerCount + ",");
-            console.Write(capacity.UserCount + ",");
-            console.Write(capacity.PasswordCount + ",");
-            console.Write(capacity.GLogCount + ",");
-            console.Write(capacity.SLogCount + ",");
-            console.Write(capacity.FingerPrintCount + ",");
-            console.Write(capacity.WhatCount);
+
+            var output = String.Join(",", new[]
+            {
+                capacity.ManagerCount,capacity.UserCount,capacity.PasswordCount,capacity.GLogCount,
+                capacity.SLogCount,capacity.FingerPrintCount,capacity.WhatCount,capacity.UserCapacity,
+                capacity.FaceCapacity,capacity.FingerPrintCapacity,capacity.LogCapacity
+            });
+            console.Write(output);
 
             timmy.DisConnect();
 

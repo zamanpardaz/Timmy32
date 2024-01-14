@@ -1,4 +1,5 @@
-﻿using McMaster.Extensions.CommandLineUtils;
+﻿using System.Collections.Generic;
+using McMaster.Extensions.CommandLineUtils;
 using Timmy32.Exceptions;
 using Timmy32.Models;
 
@@ -19,7 +20,18 @@ namespace Timmy32.Commands
                 return;
             }
 
-            var logs = timmy.GetAllLogs();
+
+            List<GeneralLogInfo> logs = null;
+
+            if (timmy.IsAI())
+            {
+                logs = timmy.GetAllLogs();
+            }
+            else
+            {
+                logs = timmy.GetLogs();
+
+            }
 
             if (logs.Count == 0)
             {

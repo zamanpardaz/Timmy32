@@ -90,6 +90,7 @@
     <Compile Include="Commands\SetWorkCode.cs" />
     <Compile Include="Commands\UploadPhoto.cs" />
     <Compile Include="Commands\User.cs" />
+    <Compile Include="Commands\VerificationMode.cs" />
     <Compile Include="Commands\Version.cs" />
     <Compile Include="Commands\Gettime.cs" />
     <Compile Include="Commands\Info.cs" />

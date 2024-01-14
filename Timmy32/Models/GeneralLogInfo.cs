@@ -3,7 +3,7 @@
     public struct GeneralLogInfo
     {
         public int dwTMachineNumber;
-        public int dwEnrollNumber;
+        public long dwEnrollNumber;
         public int dwEMachineNumber;
         public int dwVerifyMode;
         public int dwInout;
