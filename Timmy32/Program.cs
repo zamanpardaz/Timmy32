@@ -65,6 +65,7 @@ namespace Timmy32
     [Subcommand("User",typeof(Commands.GetUser))]
     [Subcommand("RemoteFaceScan",typeof(Commands.RemoteFaceScan))]
     [Subcommand("RemoteFingerPrint",typeof(Commands.RemoteFingerPrint))]
+    [Subcommand("VerificationMode",typeof(Commands.VerificationMode))]
     class Program
     {
         static int Main(string[] args)

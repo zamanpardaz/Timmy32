@@ -10,7 +10,7 @@ namespace Timmy32.Commands
     {
         public void OnExecute(IConsole console)
         {
-            Console.WriteLine("2.5.1");
+            Console.WriteLine("2.5.2");
             Console.WriteLine("ZamanPardaz Inc.");
             Console.WriteLine("CLI Version 32bits");
         }
