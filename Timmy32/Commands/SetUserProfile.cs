@@ -6,31 +6,31 @@ using Timmy32.Models;
 
 namespace Timmy32.Commands
 {
-    [Command(Description = "Set User verification Mode")] 
-    class VerificationMode:BaseParameters
+    [Command(Description = "Set a message to show user when the user set traffic")]
+
+    class SetUserProfile:BaseParameters
     {
         [Option(ShortName = "u")]
-        public long UserId { get; set; }
+        public int UserId { get; set; }
 
 
         [Option(ShortName = "s")]
-        public int Style { get; set; }
-
-     
-
+        public string Message { get; set; }
+        
         public void OnExecute(IConsole console)
         {
-            Timmy timmy = new Timmy();
+            var message = Encoding.UTF8.GetString(Convert.FromBase64String(Message));
+
+            var timmy = new Timmy();
             var isConnected = Connect(timmy, console);
 
             if (!isConnected)
             {
                 return;
             }
-
-
-
-            var result = timmy.SetUserVerificationMode(UserId, Style);
+            
+            
+            var result=timmy.SetUserProfile(UserId, message);
 
             if(result==false)
             {
@@ -39,12 +39,11 @@ namespace Timmy32.Commands
 
                 return;
             }
-
-
+            
+                
             Console.WriteLine(Constants.FormatMessage(result.ToString().ToLower()));
             
             timmy.DisConnect();
-
         }
     }
 }

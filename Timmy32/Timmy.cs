@@ -84,6 +84,15 @@ namespace Timmy32
 
             return ret;
         }
+        public int GetUserVerificationMode(long userId)
+        {
+            var userInfo = GetUserInfo(userId);
+
+            if (userInfo == null)
+                return -1;
+
+            return userInfo.UserCtrl;
+        }
         
         private bool SetUserInfo(long userId, UserInfo userInfo)
         {
@@ -455,13 +464,17 @@ namespace Timmy32
                 {
                     continue;
                 }
-                users.Add(new User()
+
+                var user = new User()
                 {
                     Id = dwEnrollNumber,
                     Enabled = true,
                     Privilege = dwPrivilegeNum,
-                    Name ="" //GetName(dwEnrollNumber)
-                });
+                    Name = "" //GetName(dwEnrollNumber)
+                };
+
+          
+                users.Add(user);
 
             } while (bRet);
 
@@ -524,6 +537,8 @@ namespace Timmy32
                 if(String.IsNullOrEmpty(s.Trim()))
                     continue;
                 var enrollNo = long.Parse(s);
+
+                
                 
                 var user = new User()
                 {
@@ -532,6 +547,13 @@ namespace Timmy32
                     Privilege = dwPrivilegeNum,
                     Name = GetName(enrollNo)
                 };
+                
+                var info = GetUserInfo(enrollNo);
+
+                if (info != null)
+                {
+                    user.Style = info.UserCtrl;
+                }
 
                 users.Add(user);
 
@@ -913,6 +935,41 @@ namespace Timmy32
 
             return userInfo;
         }
+
+        public string GetUserProfile(long userId)
+        {
+            var message = "";
+            object obj = new System.Runtime.InteropServices.VariantWrapper(message);
+
+
+            bool bRet = client.SetUserProfile(0,
+                _machineNo,
+                int.Parse(userId.ToString()),
+                _machineNo,
+                ref obj
+            );
+
+            if (bRet)
+                return (string)obj;
+            return null;
+            
+        }
+        
+        public bool SetUserProfile(long userId, string message)
+        {
+            object obj = new System.Runtime.InteropServices.VariantWrapper(message);
+
+
+            bool bRet = client.SetUserProfile(1,
+                _machineNo,
+                int.Parse(userId.ToString()),
+                _machineNo,
+                ref obj
+            );
+
+            return bRet;
+        }
+        
     }
 
     public class UserInfo

@@ -6,45 +6,42 @@ using Timmy32.Models;
 
 namespace Timmy32.Commands
 {
-    [Command(Description = "Set User verification Mode")] 
-    class VerificationMode:BaseParameters
+    [Command(Description = "get the message has been set by SetUserProfile command")]
+
+    class GetUserProfile:BaseParameters
     {
         [Option(ShortName = "u")]
-        public long UserId { get; set; }
+        public int UserId { get; set; }
 
 
-        [Option(ShortName = "s")]
-        public int Style { get; set; }
-
-     
 
         public void OnExecute(IConsole console)
         {
-            Timmy timmy = new Timmy();
+            var timmy = new Timmy();
             var isConnected = Connect(timmy, console);
 
             if (!isConnected)
             {
                 return;
             }
+            
+            
+            var result=timmy.GetUserProfile(UserId);
 
-
-
-            var result = timmy.SetUserVerificationMode(UserId, Style);
-
-            if(result==false)
+            if(result==null)
             {
                 WriteErrorCode(timmy, console);
                 timmy.DisConnect();
 
                 return;
             }
-
-
-            Console.WriteLine(Constants.FormatMessage(result.ToString().ToLower()));
+            
+                
+            var bytes = Encoding.UTF8.GetBytes(result);
+            var base64 = Convert.ToBase64String(bytes);
+            Console.WriteLine(Constants.FormatMessage(base64));
             
             timmy.DisConnect();
-
         }
     }
 }

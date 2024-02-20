@@ -57,7 +57,8 @@ namespace Timmy32.Commands
                 console.Write(user.Id + ",");
                 console.Write(base64 + ",");
                 console.Write(user.Privilege + ",");
-                console.Write(user.Enabled);
+                console.Write(user.Enabled+",");
+                console.Write(user.Style);
                 console.WriteLine();
             }
 

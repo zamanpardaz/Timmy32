@@ -12,8 +12,8 @@ using Timmy32.Commands;
 //         static void Main(string[] args)
 //         {
 //             var timmy = new Timmy();
-//             timmy.ConnectByIp("192.168.1.100",5005,0,1);
-//             var bret = timmy.GetCapacity();
+//             timmy.ConnectByIp("192.168.1.225",5005,0,1);
+//             var bret = timmy.GetAllUsers();
 //             var err = timmy.GetError();
 //
 //         }
@@ -66,6 +66,8 @@ namespace Timmy32
     [Subcommand("RemoteFaceScan",typeof(Commands.RemoteFaceScan))]
     [Subcommand("RemoteFingerPrint",typeof(Commands.RemoteFingerPrint))]
     [Subcommand("VerificationMode",typeof(Commands.VerificationMode))]
+    [Subcommand("getuserprofile",typeof(Commands.GetUserProfile))]
+    [Subcommand("setuserprofile",typeof(Commands.SetUserProfile))]
     class Program
     {
         static int Main(string[] args)
