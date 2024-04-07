@@ -182,7 +182,7 @@ namespace Timmy32
             client.GetDeviceStatus(_machineNo, 3, ref fp);
             client.GetDeviceStatus(_machineNo, 4, ref pc);
             client.GetDeviceStatus(_machineNo, 5, ref slog);
-            client.GetDeviceStatus(_machineNo, 6, ref glog);
+            client.GetDeviceStatus(_machineNo, 8, ref glog);
             client.GetDeviceStatus(_machineNo, 7, ref w);
             
             
@@ -741,11 +741,11 @@ namespace Timmy32
 
             client.ReadMark = marked;
 
-            var bRet = client.ReadGeneralLogData(_machineNo);
+            var bRet = client.ReadAllGLogData(_machineNo);
             do
             {
                 int id = 0;
-                bRet = client.GetGeneralLogDataWithSecond(_machineNo,
+                bRet = client.GetAllGLogDataWithSecond(_machineNo,
                 ref gLogInfo.dwTMachineNumber,
                 ref id,
                 ref gLogInfo.dwEMachineNumber,
