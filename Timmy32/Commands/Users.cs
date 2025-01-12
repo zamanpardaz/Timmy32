@@ -57,8 +57,19 @@ namespace Timmy32.Commands
                 console.Write(user.Id + ",");
                 console.Write(base64 + ",");
                 console.Write(user.Privilege + ",");
-                console.Write(user.Enabled+",");
-                console.Write(user.Style);
+                console.Write(user.Enabled +",");
+                console.Write(user.Style +",");
+
+                if (user.Bio != null)
+                {
+                    console.Write(user.Bio.FingerIndexes.Count +",");
+                    console.Write(user.Bio.HasFace?"1":"0");
+                }
+                else
+                {
+                    console.Write("0,");
+                    console.Write("0");
+                }
                 console.WriteLine();
             }
 

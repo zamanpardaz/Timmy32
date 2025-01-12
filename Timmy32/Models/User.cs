@@ -1,4 +1,6 @@
-﻿namespace Timmy32
+﻿using Timmy32.Models;
+
+namespace Timmy32
 {
     public class User
     {
@@ -7,5 +9,6 @@
         public bool Enabled { get; set; }
         public string Name { get; set; }
         public int Style { get; set; }
+        public UserBio Bio { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using Timmy32.Models;
 
 namespace Timmy32
 {
@@ -99,11 +100,12 @@ namespace Timmy32
             object EnrollIDobj = new System.Runtime.InteropServices.VariantWrapper(userId.ToString());
             object obj = new System.Runtime.InteropServices.VariantWrapper(userInfo.Name);
 
-            
-            var bret = client.SetUserInfoLongID(_machineNo,  ref EnrollIDobj,  ref obj,userInfo.Password,
-                userInfo.Card,userInfo.PostID,userInfo.Privilege,userInfo.Enabled,userInfo.ShiftID,userInfo.ZoneID,
+            var cardObj=new System.Runtime.InteropServices.VariantWrapper(userInfo.Card);
+            var bret = client.SetUserInfoLongID(_machineNo,  ref EnrollIDobj,
+                ref obj,userInfo.Password,
+                cardObj,userInfo.PostID,userInfo.Privilege,userInfo.Enabled,userInfo.ShiftID,userInfo.ZoneID,
                 userInfo.GroupID,userInfo.UserCtrl,userInfo.StartTime,userInfo.EndTime,userInfo.BirthDay);
-
+            
             return bret;
         }
 
@@ -464,9 +466,12 @@ namespace Timmy32
                 {
                     continue;
                 }
+                
+                var bio=GetUserBio(dwBackupNum);
 
                 var user = new User()
                 {
+                    Bio = bio,
                     Id = dwEnrollNumber,
                     Enabled = true,
                     Privilege = dwPrivilegeNum,
@@ -487,15 +492,66 @@ namespace Timmy32
             if (userInfo == null)
                 return null;
 
+            
             return new User()
             {
                 Id = id,
                 Enabled = userInfo.Enabled == 1,
                 Privilege = userInfo.Privilege,
-                Name = userInfo.Name
+                Name = userInfo.Name,
+                Bio = userInfo.GetUserBio()
             };
         }
 
+        private string D2B(long D)
+        {
+            string D2B = "";
+            while (D > 0)
+            {
+                D2B = (D % 2) + D2B;
+                D = D / 2;
+            }
+            return D2B;
+        }
+
+
+        private bool IsFinger(int index)
+        {
+            return index >= 0 && index < 10;
+        }
+
+        private bool IsFace(int index)
+        {
+            return index == 15;
+        }
+
+        private UserBio GetUserBio(int bio)
+        {
+            var userBio = new UserBio();
+            var backupStr = D2B(bio);
+
+            var index = 0;
+            for (int i = backupStr.Length-1; i>=0; i--)
+            {
+                var digit=int.Parse(backupStr[i].ToString());
+                if (digit == 1)
+                {
+                    if (IsFinger(index))
+                    {
+                        userBio.FingerIndexes.Add(index);
+                    }
+                    else if(IsFace(index))
+                    {
+                        userBio.HasFace = true;
+                    }
+                }
+
+                index++;
+            }
+
+            return userBio;
+        }
+        
         /// <summary>
         /// Working with New Devices Like AI series
         /// </summary>
@@ -532,6 +588,9 @@ namespace Timmy32
                 );
 
 
+
+                var userBio = GetUserBio(dwBackupNum);
+                
                 var s = (string) EnrollIDobj;
                 
                 if(String.IsNullOrEmpty(s.Trim()))
@@ -545,7 +604,8 @@ namespace Timmy32
                     Id = enrollNo,
                     Enabled = dwEnable == 1,
                     Privilege = dwPrivilegeNum,
-                    Name = GetName(enrollNo)
+                    Name = GetName(enrollNo),
+                    Bio=userBio
                 };
                 
                 var info = GetUserInfo(enrollNo);
@@ -837,7 +897,7 @@ namespace Timmy32
             var photo = client.GetEnrollPhotoCSLongID(machineNo, EnrollIDobj, ref photoSize, enrollPhoto);
             return photo;
         }
-
+     
         private bool RemoteAction(long userId, int backupNo)
         {
 
@@ -875,7 +935,6 @@ namespace Timmy32
             object enrollId = new System.Runtime.InteropServices.VariantWrapper(id.ToString());
             
             int Password=0;
-            int Card=0;
             int FaceFlag=0;
             int FPFlag=0;
             int PostID=0;
@@ -889,14 +948,17 @@ namespace Timmy32
             int EndTime=0;
             int BirthDay=0;
             long Card1 = 0;
+            int PalmFlag = 0;
+            object cardObj=null;
             
             bool bRet = client.GetUserInfoLongID(_machineNo,
                 ref enrollId,
                 ref obj,
                 ref Password,
-                ref Card,
+                ref cardObj,
                 ref FaceFlag,
                 ref FPFlag,
+                ref PalmFlag,
                 ref PostID,
                 ref Privilege,
                 ref Enabled,
@@ -912,13 +974,14 @@ namespace Timmy32
             if (!bRet)
                 return null;
 
+            var card = int.Parse(cardObj.ToString());
             var userInfo = new UserInfo()
             {
                 BirthDay = BirthDay,
                 FaceFlag = FaceFlag,
                 Password = Password,
                 Privilege = Privilege,
-                Card = Card,
+                Card = card,
                 Card1 = Card1,
                 Enabled = Enabled,
                 EndTime = EndTime,
@@ -991,5 +1054,27 @@ namespace Timmy32
         public int BirthDay { get; set; }
         public long Card1  { get; set; }
         public string Name { get; set; }
+
+        public UserBio GetUserBio()
+        {
+
+            var userBio = new UserBio();
+            userBio.HasFace = FaceFlag > 0;
+            
+            var binary=Convert.ToString(FPFlag, 2);
+
+            var index = 0;
+            for (int i = binary.Length; i>0; i--)
+            {
+                var digit = int.Parse(binary[index].ToString());
+                if (digit == 1)
+                {
+                    userBio.FingerIndexes.Add(index);
+                }
+
+                index++;
+            }
+            return userBio;
+        }
     }
 }

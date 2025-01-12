@@ -1,10 +1,11 @@
 ﻿
 using McMaster.Extensions.CommandLineUtils;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Timmy32.Commands;
-
+//
 // namespace Timmy32
 // {
 //     class Program
@@ -12,10 +13,52 @@ using Timmy32.Commands;
 //         static void Main(string[] args)
 //         {
 //             var timmy = new Timmy();
-//             timmy.ConnectByIp("192.168.1.225",5005,0,1);
-//             var bret = timmy.GetAllUsers();
-//             var err = timmy.GetError();
+//             var isConnected=timmy.ConnectByIp("192.168.20.53",5005,0,1);
+//             if (isConnected == false)
+//             {
+//                 Console.WriteLine("Timmy Not Connected");
+//                 return;
+//             }
 //
+//             timmy.DisableDevice();
+//
+//             var enroll = 0;
+//             for (int i = 0; i < 100; i++)
+//             {
+//                 enroll++;
+//                 var u = "User " + enroll;
+//             
+//                var result= timmy.SetUser(new User()
+//                 {
+//                     Enabled = true,
+//                     Name = u,
+//                     Id = enroll
+//                 });
+//                 
+//                 
+//             }
+//
+//             
+//
+//             
+//             // var start = DateTime.Now;
+//             //
+//             // // var users = timmy.GetAllUsers();
+//             // // var error = timmy.GetError();
+//             //
+//             //
+//             //
+//             // var end = DateTime.Now;
+//             //
+//             // var span = end - start;
+//             // // Console.WriteLine("Users:" + users.Count);
+//             // // Console.WriteLine("Error Code:" + error);
+//             // Console.WriteLine("Seconds:" + span.TotalSeconds + " - Minutes: " + span.TotalMinutes);
+//
+//             
+//             timmy.EnableDevice();
+//             timmy.DisConnect();
+//             
 //         }
 //
 //
